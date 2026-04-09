@@ -21,8 +21,9 @@ If that's not enough, you can still generate your `openapi.json` and retain full
 
 | Package | Description |
 |---|---|
-| `@ts-http/core` | Contract types + typed fetch client (browser & Node 18+) |
-| `@ts-http/express` | Express router adapter |
+| [`@ts-http/core`](packages/core/README.md) | Contract types + typed fetch client (browser & Node 18+) |
+| [`@ts-http/express`](packages/express/README.md) | Express router adapter |
+| [`@ts-http/nestjs`](packages/nestjs/README.md) | NestJS `@Action` decorator + `TypedController` type |
 
 ## How it works
 

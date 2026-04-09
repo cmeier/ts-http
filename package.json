@@ -1,6 +1,7 @@
 {
     "name": "ts-http",
     "private": true,
+    "packageManager": "pnpm@10.32.1",
     "description": "Type-safe HTTP contracts shared between TypeScript clients and servers — no code generation, no schema files",
     "author": "Clemens Meier",
     "license": "MIT",
