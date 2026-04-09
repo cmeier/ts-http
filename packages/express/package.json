@@ -1,6 +1,6 @@
 {
     "name": "@ts-http/express",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Express adapter for @ts-http/core",
     "keywords": [
         "typescript",
@@ -21,6 +21,13 @@
     "homepage": "https://github.com/cmeier/ts-http#readme",
     "bugs": {
         "url": "https://github.com/cmeier/ts-http/issues"
+    },
+    "files": [
+        "dist",
+        "README.md"
+    ],
+    "publishConfig": {
+        "access": "public"
     },
     "main": "dist/index.js",
     "types": "dist/index.d.ts",

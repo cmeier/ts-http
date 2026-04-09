@@ -21,9 +21,11 @@
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "format": "prettier --write \"**/*.{ts,mjs,js,json,md}\"",
-        "format:check": "prettier --check \"**/*.{ts,mjs,js,json,md}\""
+        "format:check": "prettier --check \"**/*.{ts,mjs,js,json,md}\"",
+        "release": "changeset publish"
     },
     "devDependencies": {
+        "@changesets/cli": "^2.30.0",
         "@eslint/js": "^10.0.0",
         "eslint": "^10.0.0",
         "prettier": "^3.0.0",
