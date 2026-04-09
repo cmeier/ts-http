@@ -1,0 +1,33 @@
+{
+    "name": "ts-http",
+    "private": true,
+    "description": "Type-safe HTTP contracts shared between TypeScript clients and servers — no code generation, no schema files",
+    "author": "Clemens Meier",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/cmeier/ts-http.git"
+    },
+    "homepage": "https://github.com/cmeier/ts-http#readme",
+    "bugs": {
+        "url": "https://github.com/cmeier/ts-http/issues"
+    },
+    "scripts": {
+        "build": "tsc -b",
+        "dev": "tsc -b --watch",
+        "build-all": "pnpm -r run build",
+        "clean": "pnpm -r exec rimraf dist",
+        "test": "pnpm -r run test",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix",
+        "format": "prettier --write \"**/*.{ts,mjs,js,json,md}\"",
+        "format:check": "prettier --check \"**/*.{ts,mjs,js,json,md}\""
+    },
+    "devDependencies": {
+        "@eslint/js": "^10.0.0",
+        "eslint": "^10.0.0",
+        "prettier": "^3.0.0",
+        "typescript": "^6.0.0",
+        "typescript-eslint": "^8.0.0"
+    }
+}

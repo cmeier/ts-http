@@ -1,0 +1,56 @@
+{
+    "name": "@ts-http/core",
+    "version": "0.0.1",
+    "description": "Typed HTTP contract definitions and fetch client",
+    "keywords": [
+        "typescript",
+        "http",
+        "rest",
+        "contract",
+        "client",
+        "typed",
+        "fetch"
+    ],
+    "author": "Clemens Meier",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/cmeier/ts-http.git",
+        "directory": "packages/core"
+    },
+    "homepage": "https://github.com/cmeier/ts-http#readme",
+    "bugs": {
+        "url": "https://github.com/cmeier/ts-http/issues"
+    },
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        }
+    },
+    "scripts": {
+        "build": "tsc -p tsconfig.json",
+        "dev": "tsc -p tsconfig.json --watch",
+        "test": "vitest run",
+        "test:types": "tsd"
+    },
+    "tsd": {
+        "directory": "type-tests",
+        "compilerOptions": {
+            "baseUrl": ".",
+            "paths": {
+                "@ts-http/core": [
+                    "./dist/index.d.ts"
+                ]
+            }
+        }
+    },
+    "devDependencies": {
+        "tsd": "^0.33.0",
+        "typescript": "^6.0.0",
+        "vite": "^6.4.2",
+        "vitest": "^4.1.4"
+    }
+}

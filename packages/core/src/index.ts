@@ -1,0 +1,12 @@
+export type { HttpAdapter, HttpAdapterRequest, HttpAdapterResponse } from './http-adapter.js';
+export type { Logger } from './logger.js';
+export { consoleLogger, silentLogger } from './logger.js';
+export type { RestClientErrorContext, RestClientErrorHandler } from './client-errors.js';
+export { RestClientError } from './client-errors.js';
+export type { HttpMethod, ResultType, RouteEntry, RouteMapping, ApiDescription, RestClientOptions, AssertAllKeysArePresent } from './types.js';
+export type { TypeAdapter } from './adapters.js';
+export { dateAdapter, buildReviver, buildReplacer } from './adapters.js';
+export { convertResult, defaultErrorHandler, makeDefaultErrorHandler } from './convert-result.js';
+export { createRestClient } from './create-rest-client.js';
+export { reviveDates } from './revive-dates.js';
+export { readNdjsonStream, readTextStream } from './stream-utils.js';

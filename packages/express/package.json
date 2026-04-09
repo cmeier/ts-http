@@ -1,0 +1,54 @@
+{
+    "name": "@ts-http/express",
+    "version": "0.0.1",
+    "description": "Express adapter for @ts-http/core",
+    "keywords": [
+        "typescript",
+        "http",
+        "rest",
+        "express",
+        "contract",
+        "typed",
+        "router"
+    ],
+    "author": "Clemens Meier",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/cmeier/ts-http.git",
+        "directory": "packages/express"
+    },
+    "homepage": "https://github.com/cmeier/ts-http#readme",
+    "bugs": {
+        "url": "https://github.com/cmeier/ts-http/issues"
+    },
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        }
+    },
+    "scripts": {
+        "build": "tsc -p tsconfig.json",
+        "dev": "tsc -p tsconfig.json --watch",
+        "test": "vitest run"
+    },
+    "dependencies": {
+        "@ts-http/core": "workspace:*"
+    },
+    "peerDependencies": {
+        "express": "^4.0.0 || ^5.0.0"
+    },
+    "devDependencies": {
+        "@types/express": "^5.0.0",
+        "@types/node": "^25.0.0",
+        "@types/supertest": "^7.0.0",
+        "express": "^5.0.0",
+        "supertest": "^7.0.0",
+        "typescript": "^6.0.0",
+        "vite": "^6.4.2",
+        "vitest": "^4.1.4"
+    }
+}

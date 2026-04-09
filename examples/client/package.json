@@ -1,0 +1,16 @@
+{
+    "name": "@examples/client",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "build": "tsc -p tsconfig.json",
+        "dev": "tsc -p tsconfig.json --watch"
+    },
+    "dependencies": {
+        "@examples/contract": "workspace:*",
+        "@ts-http/core": "workspace:*"
+    },
+    "devDependencies": {
+        "typescript": "^6.0.0"
+    }
+}
