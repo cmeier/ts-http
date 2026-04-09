@@ -3,6 +3,7 @@ import express from 'express';
 import request from 'supertest';
 import { createExpressRouter } from '../create-express-router.js';
 import type { ApiDescription } from '@ts-http/core';
+import type { ExpressController } from '../create-express-router.js';
 import { Readable } from 'node:stream';
 
 // ─── contract definitions ────────────────────────────────────────────────────
@@ -214,5 +215,29 @@ describe('createExpressRouter – Node Readable stream', () => {
         const res = await request(app).get('/stream/data').buffer(true);
         expect(res.status).toBe(200);
         expect(res.body.toString()).toBe('hello world');
+    });
+});
+
+// ─── class-based controller ───────────────────────────────────────────────────
+
+describe('createExpressRouter – class-based controller', () => {
+    it('preserves `this` for prototype methods that rely on instance state', async () => {
+        class UserController implements ExpressController<UserApi> {
+            private readonly prefix = 'user';
+
+            async getUser(id: string) { return { id, name: `${this.prefix}-${id}` }; }
+            async listUsers() { return []; }
+            async createUser(body: { name: string }) { return { id: '1', name: body.name }; }
+            async updateUser(id: string, body: { name: string }) { return { id, name: body.name }; }
+            async deleteUser() { return undefined; }
+        }
+
+        const app = makeApp();
+        const router = createExpressRouter(userApiDef, new UserController());
+        app.use('/users', router);
+
+        const res = await request(app).get('/users/42');
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual({ id: '42', name: 'user-42' });
     });
 });
