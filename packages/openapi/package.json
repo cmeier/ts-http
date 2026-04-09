@@ -1,0 +1,56 @@
+{
+    "name": "@ts-http/openapi",
+    "version": "0.0.1",
+    "description": "OpenAPI 3.0 spec generator for @ts-http contracts",
+    "keywords": [
+        "typescript",
+        "openapi",
+        "swagger",
+        "http",
+        "rest",
+        "contract"
+    ],
+    "author": "Clemens Meier",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/cmeier/ts-http.git",
+        "directory": "packages/openapi"
+    },
+    "homepage": "https://github.com/cmeier/ts-http#readme",
+    "bugs": {
+        "url": "https://github.com/cmeier/ts-http/issues"
+    },
+    "files": [
+        "dist",
+        "README.md"
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
+    "bin": {
+        "ts-http-openapi": "./dist/cli.js"
+    },
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        }
+    },
+    "scripts": {
+        "build": "tsc -p tsconfig.json",
+        "dev": "tsc -p tsconfig.json --watch",
+        "test": "vitest run"
+    },
+    "dependencies": {
+        "@ts-http/core": "workspace:*",
+        "typescript": "^6.0.2"
+    },
+    "devDependencies": {
+        "@types/node": "^25.0.0",
+        "vite": "^6.4.2",
+        "vitest": "^4.1.4"
+    }
+}

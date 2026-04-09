@@ -12,6 +12,9 @@
             "path": "packages/express"
         },
         {
+            "path": "packages/openapi"
+        },
+        {
             "path": "packages/nestjs"
         },
         {
@@ -22,6 +25,9 @@
         },
         {
             "path": "examples/server"
+        },
+        {
+            "path": "examples/openapi"
         }
     ]
 }

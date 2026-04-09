@@ -1,0 +1,25 @@
+{
+    "outputPath": "./openapi.json",
+    "tsconfigPath": "../../tsconfig.json",
+    "serverUrl": "http://localhost:3000",
+    "info": {
+        "title": "User API",
+        "description": "CRUD and streaming endpoints for user management.",
+        "version": "0.0.1"
+    },
+    "tags": [
+        {
+            "name": "Users",
+            "description": "User resource operations"
+        },
+        {
+            "name": "Streams",
+            "description": "Streaming / NDJSON endpoints"
+        }
+    ],
+    "contracts": [
+        {
+            "variableName": "userApi"
+        }
+    ]
+}
