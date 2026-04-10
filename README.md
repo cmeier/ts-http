@@ -15,7 +15,7 @@ Use it to make sure your Express.js server fulfills your defined interface — o
 Convert your data. Use it with Axios, make sure you're serializing your Luxon dates correctly, handle circular references, use it with whatever you want.
 
 
-If that's not enough, you can still generate your `openapi.json` and retain full technology freedom.
+If that's not enough, you can still generate an `openapi.json` with [`@ts-http/openapi`](packages/openapi/README.md) — which opens the door to the entire OpenAPI ecosystem: Swagger UI, Postman, client code generation in any language, API gateways, and much more.
 
 ## Packages
 
@@ -24,6 +24,7 @@ If that's not enough, you can still generate your `openapi.json` and retain full
 | [`@ts-http/core`](packages/core/README.md) | Contract types + typed fetch client (browser & Node 18+) |
 | [`@ts-http/express`](packages/express/README.md) | Express router adapter |
 | [`@ts-http/nestjs`](packages/nestjs/README.md) | NestJS `@Action` decorator + `TypedController` type |
+| [`@ts-http/openapi`](packages/openapi/README.md) | OpenAPI 3.0 spec generator — produce an `openapi.json` from your contracts |
 
 ## How it works
 
