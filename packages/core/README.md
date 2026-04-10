@@ -48,6 +48,13 @@ await client.remove('123');              // void
 
 Omitting `baseUrl` sends requests to the current origin — the right default for most browser apps.
 
+## Server adapters
+
+The same interface and `ApiDescription` contract you define for the client can be used on the server too — no duplication, full type safety end-to-end.
+
+- **[`@ts-http/express`](https://www.npmjs.com/package/@ts-http/express)** — turns the contract into an Express router via `createExpressRouter`. Handlers receive plain typed arguments; no `req`/`res`/`next` boilerplate.
+- **[`@ts-http/nestjs`](https://www.npmjs.com/package/@ts-http/nestjs)** — use the contract directly in a NestJS controller with the `@Action` decorator and `TypedController` type. No extra adapter layer needed.
+
 ## Client options
 
 ```ts
