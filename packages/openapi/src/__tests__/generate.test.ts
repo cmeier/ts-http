@@ -119,9 +119,53 @@ describe('generateOpenApi – operations', () => {
         expect(op.responses['200']).toBeUndefined();
     });
 
-    it('STREAM route returns binary schema', () => {
+    it('STREAM route returns binary schema under application/octet-stream', () => {
         const op = buildDoc().paths['/api/users/stream']!.get!;
-        const schema = op.responses['200']?.content?.['application/json']?.schema;
+        expect(op.responses['200']?.content?.['application/json']).toBeUndefined();
+        const schema = op.responses['200']?.content?.['application/octet-stream']?.schema;
+        expect(schema?.type).toBe('string');
+        expect(schema?.format).toBe('binary');
+    });
+
+    it('TEXT resultType uses text/plain content-type', () => {
+        const api: ApiDescription<any> = {
+            subRoute: '/data',
+            mapping: {
+                getText: { method: 'GET', path: 'text', resultType: 'TEXT' },
+            },
+        };
+        const doc = generateOpenApi({ contracts: [{ api, variableName: 'userApi' }], tsconfigPath: ROOT_TSCONFIG });
+        const op = doc.paths['/data/text']!.get!;
+        expect(op.responses['200']?.content?.['application/json']).toBeUndefined();
+        const schema = op.responses['200']?.content?.['text/plain']?.schema;
+        expect(schema?.type).toBe('string');
+    });
+
+    it('BLOB resultType uses application/octet-stream content-type', () => {
+        const api: ApiDescription<any> = {
+            subRoute: '/data',
+            mapping: {
+                getBlob: { method: 'GET', path: 'blob', resultType: 'BLOB' },
+            },
+        };
+        const doc = generateOpenApi({ contracts: [{ api, variableName: 'userApi' }], tsconfigPath: ROOT_TSCONFIG });
+        const op = doc.paths['/data/blob']!.get!;
+        const schema = op.responses['200']?.content?.['application/octet-stream']?.schema;
+        expect(schema?.type).toBe('string');
+        expect(schema?.format).toBe('binary');
+    });
+
+    it('ARRAYBUFFER resultType uses application/octet-stream content-type', () => {
+        const api: ApiDescription<any> = {
+            subRoute: '/data',
+            mapping: {
+                getBuffer: { method: 'GET', path: 'buffer', resultType: 'ARRAYBUFFER' },
+            },
+        };
+        const doc = generateOpenApi({ contracts: [{ api, variableName: 'userApi' }], tsconfigPath: ROOT_TSCONFIG });
+        const op = doc.paths['/data/buffer']!.get!;
+        const schema = op.responses['200']?.content?.['application/octet-stream']?.schema;
+        expect(schema?.type).toBe('string');
         expect(schema?.format).toBe('binary');
     });
 

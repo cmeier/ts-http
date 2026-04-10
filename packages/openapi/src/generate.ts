@@ -149,17 +149,21 @@ export function generateOpenApi(
                 }
             }
 
-            const isStream = route.resultType === 'STREAM';
-            const isNone = route.resultType === 'NONE';
+            const resultType = route.resultType ?? 'JSON';
             const returnSchema = typeInfo?.returnSchema ?? null;
 
             const responses: Operation['responses'] = {};
-            if (isNone || !returnSchema) {
+            if (resultType === 'NONE') {
                 responses['204'] = { description: 'No content' };
-            } else if (isStream) {
-                responses['200'] = { description: 'OK', content: { 'application/json': { schema: { type: 'string', format: 'binary' } } } };
-            } else {
+            } else if (resultType === 'STREAM' || resultType === 'BLOB' || resultType === 'ARRAYBUFFER') {
+                responses['200'] = { description: 'OK', content: { 'application/octet-stream': { schema: { type: 'string', format: 'binary' } } } };
+            } else if (resultType === 'TEXT') {
+                responses['200'] = { description: 'OK', content: { 'text/plain': { schema: { type: 'string' } } } };
+            } else if (returnSchema) {
+                // JSON and AUTO: use application/json with the inferred TypeScript schema
                 responses['200'] = { description: 'OK', content: { 'application/json': { schema: returnSchema } } };
+            } else {
+                responses['204'] = { description: 'No content' };
             }
             responses['default'] = { description: 'Error' };
 

@@ -42,5 +42,5 @@ export interface OperationParameter {
 
 export interface Response {
     description: string;
-    content?: { 'application/json': { schema: SchemaObject } };
+    content?: Record<string, { schema: SchemaObject }>;
 }
