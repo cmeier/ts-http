@@ -84,19 +84,19 @@ describe('generateOpenApi – paths', () => {
 
 describe('generateOpenApi – operations', () => {
     it('GET /api/users has no requestBody', () => {
-        const op = buildDoc().paths['/api/users']?.get;
+        const op = buildDoc().paths['/api/users']!.get;
         expect(op).toBeDefined();
         expect(op!.requestBody).toBeUndefined();
     });
 
     it('GET /api/users returns 200 with array schema', () => {
-        const op = buildDoc().paths['/api/users']?.get!;
+        const op = buildDoc().paths['/api/users']!.get!;
         const schema = op.responses['200']?.content?.['application/json']?.schema;
         expect(schema?.type).toBe('array');
     });
 
     it('GET /api/users/{id} has path parameter', () => {
-        const op = buildDoc().paths['/api/users/{id}']?.get!;
+        const op = buildDoc().paths['/api/users/{id}']!.get!;
         expect(op.parameters).toHaveLength(1);
         expect(op.parameters![0].name).toBe('id');
         expect(op.parameters![0].in).toBe('path');
@@ -104,7 +104,7 @@ describe('generateOpenApi – operations', () => {
     });
 
     it('POST /api/users has requestBody with required fields', () => {
-        const op = buildDoc().paths['/api/users']?.post!;
+        const op = buildDoc().paths['/api/users']!.post!;
         expect(op.requestBody).toBeDefined();
         expect(op.requestBody!.required).toBe(true);
         const schema = op.requestBody!.content['application/json'].schema;
@@ -114,29 +114,29 @@ describe('generateOpenApi – operations', () => {
     });
 
     it('DELETE /api/users/{id} returns 204 (resultType NONE)', () => {
-        const op = buildDoc().paths['/api/users/{id}']?.delete!;
+        const op = buildDoc().paths['/api/users/{id}']!.delete!;
         expect(op.responses['204']).toBeDefined();
         expect(op.responses['200']).toBeUndefined();
     });
 
     it('STREAM route returns binary schema', () => {
-        const op = buildDoc().paths['/api/users/stream']?.get!;
+        const op = buildDoc().paths['/api/users/stream']!.get!;
         const schema = op.responses['200']?.content?.['application/json']?.schema;
         expect(schema?.format).toBe('binary');
     });
 
     it('operationId defaults to method name', () => {
-        const op = buildDoc().paths['/api/users']?.get!;
+        const op = buildDoc().paths['/api/users']!.get!;
         expect(op.operationId).toBe('getAll');
     });
 
     it('summary is taken from route entry', () => {
-        const op = buildDoc().paths['/api/users']?.get!;
+        const op = buildDoc().paths['/api/users']!.get!;
         expect(op.summary).toBe('List all users');
     });
 
     it('tags are taken from route entry', () => {
-        const op = buildDoc().paths['/api/users']?.get!;
+        const op = buildDoc().paths['/api/users']!.get!;
         expect(op.tags).toContain('Users');
     });
 });

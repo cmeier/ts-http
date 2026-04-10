@@ -16,7 +16,7 @@ export interface ContractSource {
      * When omitted, the mapping is read statically from the source AST
      * using `variableName` — no module loading required.
      */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     api?: ApiDescription<any>;
     /**
      * Name of one exported ApiDescription variable (e.g. `"userApi"`).
