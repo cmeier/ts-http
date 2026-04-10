@@ -5,8 +5,8 @@
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
-        "build": "tsc -p tsconfig.json",
-        "dev": "tsc -p tsconfig.json --watch",
+        "build": "tsc -b --force tsconfig.json",
+        "dev": "tsc -b tsconfig.json --watch",
         "generate": "ts-http-openapi openapi.config.json"
     },
     "dependencies": {

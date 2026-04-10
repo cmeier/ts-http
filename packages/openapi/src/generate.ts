@@ -16,7 +16,7 @@ export interface ContractSource {
      * When omitted, the mapping is read statically from the source AST
      * using `variableName` — no module loading required.
      */
-     
+
     api?: ApiDescription<any>;
     /**
      * Name of one exported ApiDescription variable (e.g. `"userApi"`).
@@ -206,8 +206,8 @@ export function generateOpenApi(
     // Also include any tags from options.tags not yet in the map.
     const mergedTags = mergedTagsMap.size > 0
         ? [...mergedTagsMap.entries()].map(([name, description]) =>
-              description !== undefined ? { name, description } : { name },
-          )
+            description !== undefined ? { name, description } : { name },
+        )
         : undefined;
 
     const firstTitle = info?.title ?? 'API';

@@ -14,10 +14,10 @@
         "url": "https://github.com/cmeier/ts-http/issues"
     },
     "scripts": {
-        "build": "tsc -b",
+        "build": "tsc -b --force",
         "dev": "tsc -b --watch",
         "build-all": "pnpm -r run build",
-        "clean": "pnpm -r exec rimraf dist",
+        "clean": "rimraf tsconfig.tsbuildinfo && pnpm -r exec rimraf dist tsconfig.tsbuildinfo",
         "test": "pnpm -r run test",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",

@@ -12,6 +12,20 @@
         "strict": true,
         "composite": true,
         "esModuleInterop": true,
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "paths": {
+            "@ts-http/core": [
+                "./packages/core/src/index.ts"
+            ],
+            "@ts-http/express": [
+                "./packages/express/src/index.ts"
+            ],
+            "@ts-http/nestjs": [
+                "./packages/nestjs/src/index.ts"
+            ],
+            "@ts-http/openapi": [
+                "./packages/openapi/src/index.ts"
+            ]
+        }
     }
 }
