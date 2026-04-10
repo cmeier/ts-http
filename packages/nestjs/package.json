@@ -26,6 +26,7 @@
         "dist",
         "!dist/__tests__",
         "README.md",
+        "logo.svg",
         "logo.png"
     ],
     "publishConfig": {

@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="./logo.png" alt="ts-http" width="100" height="96" />
-</p>
+![ts-http logo](./logo.svg)
 
 # @ts-http/core
 
