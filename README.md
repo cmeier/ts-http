@@ -247,8 +247,10 @@ The `resultType` on a route entry (or `defaultResultType` on the client) control
 | `BLOB` | `Blob` |
 | `ARRAYBUFFER` | `ArrayBuffer` |
 | `STREAM` | `ReadableStream` |
-| `AUTO` | JSON if `content-type` is `application/json`, text otherwise |
+| `AUTO` | Best-effort content-type handling: parse JSON responses automatically, otherwise return text |
 | `NONE` | Nothing — response body is ignored (useful for DELETE) |
+
+`AUTO` is intentionally conservative. For binary downloads or streaming endpoints, prefer the explicit `BLOB`, `ARRAYBUFFER`, or `STREAM` result types.
 
 ## Type adapters
 
