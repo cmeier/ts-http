@@ -1,6 +1,6 @@
 {
     "name": "@ts-http/nestjs",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "NestJS adapter for @ts-http/core",
     "keywords": [
         "typescript",
