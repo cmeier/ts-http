@@ -188,8 +188,12 @@ describe('parseContractVariable', () => {
 
     it('reads optional meta fields (tags, summary)', () => {
         const info = parseContractVariable('userApi', ROOT_TSCONFIG);
-        expect(info.mapping['getAll'].tags).toContain('Users');
+        // Tags are now at contract level, not repeated on each route
+        expect(info.tag).toEqual({ name: 'Users', description: 'User resource operations' });
+        expect(info.mapping['getAll'].tags).toBeUndefined();
         expect(info.mapping['getAll'].summary).toBe('List all users');
+        // Route-level tags still work as overrides
+        expect(info.mapping['streamAll'].tags).toContain('Streams');
     });
 
     it('reads resultType', () => {
@@ -287,10 +291,13 @@ describe('parseContractVariable', () => {
 
     it('reads optional meta fields (tags, summary)', () => {
         const info = parseContractVariable('userApi', ROOT_TSCONFIG);
-        expect(info.mapping['getAll'].tags).toContain('Users');
+        // Tags are now at contract level, not repeated on each route
+        expect(info.tag).toEqual({ name: 'Users', description: 'User resource operations' });
+        expect(info.mapping['getAll'].tags).toBeUndefined();
         expect(info.mapping['getAll'].summary).toBe('List all users');
+        // Route-level tags still work as overrides
+        expect(info.mapping['streamAll'].tags).toContain('Streams');
     });
-
     it('reads resultType', () => {
         const info = parseContractVariable('userApi', ROOT_TSCONFIG);
         expect(info.mapping['remove'].resultType).toBe('NONE');

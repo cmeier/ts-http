@@ -1,7 +1,10 @@
 {
     "compilerOptions": {
         "forceConsistentCasingInFileNames": true,
-        "strict": true
+        "strict": true,
+        "types": [
+            "node"
+        ]
     },
     "files": [],
     "references": [

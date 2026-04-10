@@ -3,8 +3,8 @@
     "version": "0.0.4",
     "private": true,
     "scripts": {
-        "build": "tsc -p tsconfig.json",
-        "dev": "tsc -p tsconfig.json --watch",
+        "build": "tsc -b --force tsconfig.json",
+        "dev": "tsc -b tsconfig.json --watch",
         "start": "node dist/index.js"
     },
     "dependencies": {

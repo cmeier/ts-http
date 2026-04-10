@@ -1,3 +1,5 @@
+![ts-http logo](./logo.svg)
+
 # @ts-http/core
 
 [![npm](https://img.shields.io/npm/v/@ts-http/core)](https://www.npmjs.com/package/@ts-http/core)
@@ -30,7 +32,7 @@ interface UserApi {
 }
 
 const userApi: ApiDescription<UserApi> = {
-  controller: '/api/users',
+  subRoute: '/api/users',
   mapping: {
     getAll:  { method: 'GET',    path: '' },
     getById: { method: 'GET',    path: ':id' },
@@ -99,8 +101,10 @@ The `resultType` on a route entry (or `defaultResultType` on the client) control
 | `BLOB` | `Blob` |
 | `ARRAYBUFFER` | `ArrayBuffer` |
 | `STREAM` | `ReadableStream` |
-| `AUTO` | JSON if `content-type` is `application/json`, text otherwise |
+| `AUTO` | Best-effort content-type handling: parse JSON responses automatically, otherwise return text |
 | `NONE` | Nothing — response body is ignored (useful for DELETE) |
+
+`AUTO` is intentionally conservative. For binary downloads or streaming endpoints, prefer the explicit `BLOB`, `ARRAYBUFFER`, or `STREAM` result types.
 
 ## Type adapters
 
@@ -118,13 +122,15 @@ const client = createRestClient(api, baseUrl, {
 
 Pass `adapters: []` to disable all transforms.
 
+See the [**Luxon DateTime** adapter](https://github.com/cmeier/ts-http/blob/main/docs/adapters/luxon.md) and [**Axios** adapter](https://github.com/cmeier/ts-http/blob/main/docs/adapters/axios.md) guides for ready-to-use examples.
+
 ## Streaming
 
 Set `resultType: 'STREAM'` on a route entry to receive a `ReadableStream`:
 
 ```ts
 const fileApi: ApiDescription<FileApi> = {
-  controller: '/files',
+  subRoute: '/files',
   mapping: {
     download: { method: 'GET', path: ':id', resultType: 'STREAM' },
   },
@@ -147,4 +153,4 @@ const client = createRestClient(api, baseUrl, { logging: false });
 
 ## License
 
-[MIT](../../LICENSE) © 2026 Clemens Meier
+[MIT](https://github.com/cmeier/ts-http/blob/main/LICENSE) © 2026 Clemens Meier

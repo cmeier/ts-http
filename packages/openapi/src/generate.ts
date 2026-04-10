@@ -16,7 +16,7 @@ export interface ContractSource {
      * When omitted, the mapping is read statically from the source AST
      * using `variableName` — no module loading required.
      */
-     
+
     api?: ApiDescription<any>;
     /**
      * Name of one exported ApiDescription variable (e.g. `"userApi"`).
@@ -94,11 +94,22 @@ export function generateOpenApi(
         }
     }
 
+    // Auto-collected tag definitions: { name → description? }, built while processing contracts.
+    const autoTags = new Map<string, string | undefined>();
+
     for (const { api, variableName, varInfo: preResolved } of resolved) {
         // When api is omitted, read the mapping statically from the AST.
         const varInfo = preResolved ?? (!api ? parseContractVariable(variableName!, tsconfigPath) : undefined);
         const subRoute = api?.subRoute ?? varInfo?.subRoute;
         const mapping = (api?.mapping ?? varInfo?.mapping) as Record<string, RouteEntry | RouteEntryInfo>;
+
+        // Resolve contract-level tag (string shorthand or full definition).
+        const rawContractTag = api?.tag ?? varInfo?.tag;
+        const contractTagName = typeof rawContractTag === 'string' ? rawContractTag : rawContractTag?.name;
+        const contractTagDescription = typeof rawContractTag === 'object' ? rawContractTag?.description : undefined;
+        if (contractTagName && !autoTags.has(contractTagName)) {
+            autoTags.set(contractTagName, contractTagDescription);
+        }
 
         const interfaceName = varInfo
             ? varInfo.interfaceName
@@ -167,11 +178,16 @@ export function generateOpenApi(
             }
             responses['default'] = { description: 'Error' };
 
+            // Per-route tags override the contract-level tag; contract tag is the fallback.
+            const effectiveTags = (route.tags && route.tags.length > 0)
+                ? route.tags
+                : (contractTagName ? [contractTagName] : undefined);
+
             const operation: Operation = {
                 operationId: route.operationId ?? methodName,
                 ...(route.summary && { summary: route.summary }),
                 ...(route.description ?? typeInfo?.description ? { description: route.description ?? typeInfo?.description } : {}),
-                ...(route.tags && { tags: route.tags }),
+                ...(effectiveTags && { tags: effectiveTags }),
                 ...(route.deprecated && { deprecated: true }),
                 parameters: parameters.length > 0 ? parameters : undefined,
                 requestBody,
@@ -183,6 +199,17 @@ export function generateOpenApi(
         }
     }
 
+    // Merge auto-collected tags with options.tags (options wins on description conflict).
+    const optionsTagMap = new Map((tags ?? []).map(t => [t.name, t.description]));
+    const mergedTagsMap = new Map<string, string | undefined>([...autoTags]);
+    for (const [name, desc] of optionsTagMap) mergedTagsMap.set(name, desc);
+    // Also include any tags from options.tags not yet in the map.
+    const mergedTags = mergedTagsMap.size > 0
+        ? [...mergedTagsMap.entries()].map(([name, description]) =>
+            description !== undefined ? { name, description } : { name },
+        )
+        : undefined;
+
     const firstTitle = info?.title ?? 'API';
 
     const doc: OpenApiDocument = {
@@ -192,7 +219,7 @@ export function generateOpenApi(
             version: info?.version ?? '0.0.1',
             ...(info?.description && { description: info.description }),
         },
-        ...(tags && { tags }),
+        ...(mergedTags && { tags: mergedTags }),
         ...(serverUrl && { servers: [{ url: serverUrl }] } as any),
         paths,
         ...(Object.keys(schemas).length > 0 && { components: { schemas } }),

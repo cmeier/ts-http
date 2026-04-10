@@ -20,8 +20,8 @@ writeOpenApi({
         description: 'CRUD and streaming endpoints for user management.',
         version: '0.0.1',
     },
+    // Only Streams needs an explicit entry here — Users is auto-derived from userApi.tag.
     tags: [
-        { name: 'Users', description: 'User resource operations' },
         { name: 'Streams', description: 'Streaming / NDJSON endpoints' },
     ],
 });

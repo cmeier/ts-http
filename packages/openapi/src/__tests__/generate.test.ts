@@ -1,8 +1,10 @@
 import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, it, expect } from 'vitest';
 import type { ApiDescription } from '@ts-http/core';
 import { generateOpenApi } from '../generate.js';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT_TSCONFIG = path.resolve(__dirname, '../../../../tsconfig.json');
 
 // Minimal contract that matches the 'UserApi' interface in examples/contract.

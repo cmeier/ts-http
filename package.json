@@ -14,10 +14,10 @@
         "url": "https://github.com/cmeier/ts-http/issues"
     },
     "scripts": {
-        "build": "tsc -b",
+        "build": "tsc -b --force",
         "dev": "tsc -b --watch",
         "build-all": "pnpm -r run build",
-        "clean": "pnpm -r exec rimraf dist",
+        "clean": "rimraf tsconfig.tsbuildinfo && pnpm -r exec rimraf dist tsconfig.tsbuildinfo",
         "test": "pnpm -r run test",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
@@ -25,11 +25,18 @@
         "format:check": "prettier --check \"**/*.{ts,mjs,js,json,md}\"",
         "release": "changeset publish"
     },
+    "pnpm": {
+        "overrides": {
+            "@ts-http/openapi>@ts-http/core": "0.0.4"
+        }
+    },
     "devDependencies": {
         "@changesets/cli": "^2.30.0",
         "@eslint/js": "^10.0.0",
+        "@types/node": "^25.0.0",
         "eslint": "^10.0.0",
         "prettier": "^3.0.0",
+        "rimraf": "^6.0.1",
         "typescript": "^6.0.0",
         "typescript-eslint": "^8.0.0"
     }

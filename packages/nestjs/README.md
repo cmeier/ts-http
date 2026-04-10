@@ -1,9 +1,11 @@
+![ts-http logo](./logo.svg)
+
 # @ts-http/nestjs
 
 [![npm](https://img.shields.io/npm/v/@ts-http/nestjs)](https://www.npmjs.com/package/@ts-http/nestjs)
 [![GitHub](https://img.shields.io/badge/github-cmeier%2Fts--http-blue)](https://github.com/cmeier/ts-http)
 
-NestJS adapter for [ts-http](https://github.com/cmeier/ts-http). Bind contract routes to NestJS controller methods with a single `@Action` decorator — no string duplication, compile-time enforcement of every route.
+NestJS adapter for [ts-http](https://github.com/cmeier/ts-http). Bind contract routes to NestJS controller methods with a single `@Action` decorator — no string duplication, compile-time enforcement of every route, and for many setups an even simpler server integration than Express.
 
 ## Installation
 
@@ -28,18 +30,26 @@ Define a contract (typically in a shared package):
 
 ```ts
 // contract/src/index.ts
-import { defineContract } from '@ts-http/core';
+import { ApiDescription } from '@ts-http/core';
 
-export const userApi = defineContract({
-  subRoute: '/users',
+export interface UserApi {
+  getAll(): Promise<User[]>;
+  getOne(id: string): Promise<User>;
+  create(data: { name: string; email: string }): Promise<User>;
+  update(id: string, data: { name?: string; email?: string }): Promise<User>;
+  remove(id: string): Promise<void>;
+}
+
+export const userApi: ApiDescription<UserApi> = {
+  subRoute: '/api/users',
   mapping: {
-    getAll: { method: 'GET',    path: '/users' },
-    getOne: { method: 'GET',    path: '/users/:id' },
-    create: { method: 'POST',   path: '/users' },
-    update: { method: 'PUT',    path: '/users/:id' },
-    remove: { method: 'DELETE', path: '/users/:id' },
+    getAll:  { method: 'GET',    path: '' },
+    getOne:  { method: 'GET',    path: ':id' },
+    create:  { method: 'POST',   path: '' },
+    update:  { method: 'PUT',    path: ':id' },
+    remove:  { method: 'DELETE', path: ':id' },
   },
-});
+};
 ```
 
 Implement the controller using `@Action` and `TypedController`:
@@ -47,39 +57,40 @@ Implement the controller using `@Action` and `TypedController`:
 ```ts
 import { Controller, Body, Param } from '@nestjs/common';
 import { Action, TypedController } from '@ts-http/nestjs';
-import { userApi } from '@my-app/contract';
-
-type UserApi = typeof userApi.mapping;
+import { userApi, UserApi } from '@my-app/contract';
 
 @Controller(userApi.subRoute ?? '/')
 export class UserController implements TypedController<UserApi> {
-
-  @Action(userApi.mapping.getAll, 'List all users')
-  async getAll(): Promise<User[]> {
+  @Action(userApi.mapping.getAll)
+  getAll() {
     return db.users.findAll();
   }
 
-  @Action(userApi.mapping.getOne)
-  async getOne(@Param('id') id: string): Promise<User> {
+  @Action(userApi.mapping.getById)
+  getById(@Param('id') id: string) {
     return db.users.findById(id);
   }
 
-  @Action(userApi.mapping.create, 'Create a user')
-  async create(@Body() body: CreateUserDto): Promise<User> {
+  @Action(userApi.mapping.create)
+  create(@Body() body: { name: string; email: string }) {
     return db.users.create(body);
   }
 
   @Action(userApi.mapping.update)
-  async update(@Param('id') id: string, @Body() body: UpdateUserDto): Promise<User> {
+  update(@Param('id') id: string, @Body() body: { name?: string; email?: string }) {
     return db.users.update(id, body);
   }
 
   @Action(userApi.mapping.remove)
-  async remove(@Param('id') id: string): Promise<void> {
+  remove(@Param('id') id: string) {
     return db.users.delete(id);
   }
 }
 ```
+
+This uses the same `userApi` contract as the Express example, but with less wiring because NestJS already handles parameter and body injection via decorators.
+
+`@Action` takes the route entry directly from the contract mapping and applies the correct NestJS HTTP method decorator and path. `TypedController<UserApi>` enforces that every method in the contract is implemented with a matching return type — missing or mistyped methods are a compile error.
 
 ## API
 
@@ -106,4 +117,4 @@ implements TypedController<typeof myApi.mapping>
 
 ## License
 
-MIT
+[MIT](https://github.com/cmeier/ts-http/blob/main/LICENSE) © 2026 Clemens Meier

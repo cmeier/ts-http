@@ -3,7 +3,7 @@
     "version": "0.0.4",
     "private": true,
     "scripts": {
-        "build": "tsc -p tsconfig.json",
+        "build": "tsc -b --force tsconfig.json",
         "generate": "tsx src/generate-openapi.ts",
         "generate:config": "ts-http-openapi openapi.config.json",
         "preview": "tsx src/generate-openapi.ts && npx --yes serve . --listen 4000 --no-clipboard"

@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="1400"
+   height="860"
+   viewBox="0 0 1400 860"
+   role="img"
+   aria-labelledby="title desc"
+   version="1.1"
+   id="svg40"
+   sodipodi:docname="package-architecture.svg"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview40"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:zoom="1.3174419"
+     inkscape:cx="700.22065"
+     inkscape:cy="430"
+     inkscape:window-width="2560"
+     inkscape:window-height="1351"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg40" />
+  <title
+     id="title">ts-http package architecture</title>
+  <desc
+     id="desc">A shared TypeScript contract sits between client and server. Client and server both reference the contract. The contract and client use @ts-http/core, the server uses @ts-http/express or @ts-http/nestjs, and @ts-http/openapi is an optional extension for Swagger UI and clients beyond TypeScript.</desc>
+  <defs
+     id="defs13">
+    <linearGradient
+       id="bg"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="1">
+      <stop
+         offset="0%"
+         stop-color="#f8fbff"
+         id="stop1" />
+      <stop
+         offset="100%"
+         stop-color="#eef4ff"
+         id="stop2" />
+    </linearGradient>
+    <linearGradient
+       id="coreGrad"
+       x1="53.121893"
+       y1="149.09107"
+       x2="236.0973"
+       y2="332.06648"
+       gradientTransform="scale(1.6942167,0.59024325)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0%"
+         stop-color="#0f172a"
+         id="stop3" />
+      <stop
+         offset="100%"
+         stop-color="#334155"
+         id="stop4" />
+    </linearGradient>
+    <linearGradient
+       id="contractGrad"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="1">
+      <stop
+         offset="0%"
+         stop-color="#4f46e5"
+         id="stop5" />
+      <stop
+         offset="100%"
+         stop-color="#7c3aed"
+         id="stop6" />
+    </linearGradient>
+    <linearGradient
+       id="clientGrad"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="1">
+      <stop
+         offset="0%"
+         stop-color="#0ea5e9"
+         id="stop7" />
+      <stop
+         offset="100%"
+         stop-color="#2563eb"
+         id="stop8" />
+    </linearGradient>
+    <linearGradient
+       id="serverGrad"
+       x1="690.72684"
+       y1="702.08652"
+       x2="966.26268"
+       y2="977.62236"
+       gradientTransform="scale(1.3246915,0.75489272)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0%"
+         stop-color="#10b981"
+         id="stop9" />
+      <stop
+         offset="100%"
+         stop-color="#059669"
+         id="stop10" />
+    </linearGradient>
+    <linearGradient
+       id="optionalGrad"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="1">
+      <stop
+         offset="0%"
+         stop-color="#f3f4f6"
+         id="stop11" />
+      <stop
+         offset="100%"
+         stop-color="#e5e7eb"
+         id="stop12" />
+    </linearGradient>
+    <filter
+       id="shadow"
+       x="0"
+       y="0"
+       width="1"
+       height="1">
+      <feDropShadow
+         dx="0"
+         dy="12"
+         stdDeviation="18"
+         flood-color="#0f172a"
+         flood-opacity="0.12" />
+    </filter>
+    <marker
+       id="arrow"
+       viewBox="0 0 10 10"
+       refX="9"
+       refY="5"
+       markerWidth="8"
+       markerHeight="8"
+       orient="auto-start-reverse">
+      <path
+         d="M 0 0 L 10 5 L 0 10 z"
+         fill="#64748b"
+         id="path12" />
+    </marker>
+    <marker
+       id="arrowSoft"
+       viewBox="0 0 10 10"
+       refX="9"
+       refY="5"
+       markerWidth="8"
+       markerHeight="8"
+       orient="auto-start-reverse">
+      <path
+         d="M 0 0 L 10 5 L 0 10 z"
+         fill="#94a3b8"
+         id="path13" />
+    </marker>
+    <style
+       id="style13">
+      .pkg-title { font: 700 24px 'Segoe UI', Inter, Arial, sans-serif; fill: #ffffff; }
+      .pkg-sub { font: 500 15px 'Segoe UI', Inter, Arial, sans-serif; fill: rgba(255,255,255,0.9); }
+      .optional-title { font: 700 22px 'Segoe UI', Inter, Arial, sans-serif; fill: #334155; }
+      .optional-sub { font: 500 15px 'Segoe UI', Inter, Arial, sans-serif; fill: #64748b; }
+      .box-title { font: 700 28px 'Segoe UI', Inter, Arial, sans-serif; fill: #ffffff; }
+      .box-copy { font: 500 17px 'Segoe UI', Inter, Arial, sans-serif; fill: rgba(255,255,255,0.94); }
+      .arrow-label { font: 600 15px 'Segoe UI', Inter, Arial, sans-serif; fill: #475569; }
+      .soft-label { font: 600 15px 'Segoe UI', Inter, Arial, sans-serif; fill: #64748b; }
+      .pill-text { font: 700 14px 'Segoe UI', Inter, Arial, sans-serif; }
+      .footer-chip { font: 700 14px 'Segoe UI', Inter, Arial, sans-serif; fill: #1e293b; }
+    </style>
+  </defs>
+  <rect
+     width="1400"
+     height="860"
+     fill="url(#bg)"
+     id="rect13" />
+  <rect
+     x="24"
+     y="24"
+     width="1352"
+     height="812"
+     rx="28"
+     fill="#ffffff"
+     opacity="0.94"
+     id="rect14" />
+  <rect
+     x="90"
+     y="88"
+     width="310"
+     height="108"
+     rx="22"
+     fill="url(#coreGrad)"
+     filter="url(#shadow)"
+     id="rect15"
+     style="fill:url(#coreGrad)"
+     transform="matrix(1,0,0,1.0632539,0,-5.566343)" />
+  <text
+     x="118"
+     y="132"
+     class="pkg-title"
+     id="text15">@ts-http/core</text>
+  <text
+     x="118"
+     y="162"
+     class="pkg-sub"
+     id="text16">contract types + createRestClient</text>
+  <rect
+     x="800"
+     y="88"
+     width="480"
+     height="108"
+     rx="22"
+     fill="url(#optionalGrad)"
+     stroke="#cbd5e1"
+     stroke-width="2"
+     stroke-dasharray="8 8"
+     id="rect16" />
+  <text
+     x="828"
+     y="130"
+     class="optional-title"
+     id="text17">@ts-http/openapi  ·  optional</text>
+  <text
+     x="828"
+     y="160"
+     class="optional-sub"
+     id="text18">Swagger UI, external clients, OpenAPI ecosystem</text>
+  <rect
+     x="360"
+     y="230"
+     width="690"
+     height="220"
+     rx="30"
+     fill="url(#contractGrad)"
+     filter="url(#shadow)"
+     id="rect18" />
+  <text
+     x="400"
+     y="280"
+     class="box-title"
+     id="text19">contract</text>
+  <text
+     x="400"
+     y="316"
+     class="box-copy"
+     id="text20">shared package with the API as the single source of truth</text>
+  <text
+     x="400"
+     y="352"
+     class="box-copy"
+     id="text21">• TypeScript interface</text>
+  <text
+     x="400"
+     y="386"
+     class="box-copy"
+     id="text22">• `ApiDescription` HTTP config</text>
+  <text
+     x="400"
+     y="420"
+     class="box-copy"
+     id="text23">• data contracts / DTOs</text>
+  <rect
+     x="90"
+     y="540"
+     width="390"
+     height="186"
+     rx="24"
+     fill="url(#clientGrad)"
+     filter="url(#shadow)"
+     id="rect23" />
+  <text
+     x="122"
+     y="588"
+     class="box-title"
+     id="text24">client</text>
+  <text
+     x="122"
+     y="622"
+     class="box-copy"
+     id="text25">imports the shared contract</text>
+  <text
+     x="122"
+     y="652"
+     class="box-copy"
+     id="text26">no extra implementation needed</text>
+  <text
+     x="122"
+     y="682"
+     class="box-copy"
+     id="text27">`createRestClient(...)` gives you the API</text>
+  <rect
+     x="915"
+     y="530"
+     width="365"
+     height="208"
+     rx="24"
+     fill="url(#serverGrad)"
+     filter="url(#shadow)"
+     id="rect27"
+     style="fill:url(#serverGrad)"
+     transform="matrix(1,0,0,1.1167764,0,-61.891507)" />
+  <text
+     x="947"
+     y="580"
+     class="box-title"
+     id="text28">server</text>
+  <text
+     x="947"
+     y="614"
+     class="box-copy"
+     id="text29">imports the shared contract</text>
+  <text
+     x="947"
+     y="644"
+     class="box-copy"
+     id="text30">implementation is controlled by contract</text>
+  <text
+     x="947"
+     y="674"
+     class="box-copy"
+     id="text31">business logic implements interface</text>
+  <text
+     x="947"
+     y="704"
+     class="arrow-label"
+     fill="rgba(255,255,255,0.95)"
+     id="text32">adapter choices</text>
+  <rect
+     x="947"
+     y="716"
+     width="154"
+     height="30"
+     rx="15"
+     fill="#fff7ed"
+     opacity="0.98"
+     id="rect32" />
+  <text
+     x="968"
+     y="736"
+     class="pill-text"
+     fill="#9a3412"
+     id="text33">@ts-http/express</text>
+  <rect
+     x="1110"
+     y="716"
+     width="150"
+     height="30"
+     rx="15"
+     fill="#fef2f2"
+     opacity="0.98"
+     id="rect33" />
+  <text
+     x="1129"
+     y="736"
+     class="pill-text"
+     fill="#b91c1c"
+     id="text34">@ts-http/nestjs</text>
+  <path
+     d="M 519.60022,230.96195 C 483.61379,189.91397 436.45916,169.38997 401.71364,169.38997"
+     fill="none"
+     stroke="#64748b"
+     stroke-width="3.19177"
+     marker-end="url(#arrow)"
+     id="path34" />
+  <text
+     x="475.54282"
+     y="174.06001"
+     class="arrow-label"
+     id="text35"
+     style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:15px;line-height:normal;font-family:'Segoe UI', Inter, Arial, sans-serif">uses core type helpers</text>
+  <path
+     d="M 844.7307,230.67402 C 900.55854,219.939 953.24999,210.27748 1009.7051,198.46896"
+     fill="none"
+     stroke="#94a3b8"
+     stroke-width="2.03088"
+     stroke-dasharray="8, 8"
+     marker-end="url(#arrowSoft)"
+     id="path35" />
+  <text
+     x="1084.5542"
+     y="213.31334"
+     class="soft-label"
+     id="text36"
+     style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:15px;line-height:normal;font-family:'Segoe UI', Inter, Arial, sans-serif">optional OpenAPI export</text>
+  <path
+     d="m 428.95018,542.2463 c 87.9629,-49.48069 148.15785,-78.87133 218.10658,-91.77512"
+     fill="none"
+     stroke="#64748b"
+     stroke-width="4.3531"
+     marker-end="url(#arrow)"
+     id="path36"
+     inkscape:transform-center-x="31.707822"
+     inkscape:transform-center-y="1.238978" />
+  <text
+     x="353.80582"
+     y="478.67435"
+     class="arrow-label"
+     id="text37"
+     style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:15px;line-height:normal;font-family:'Segoe UI', Inter, Arial, sans-serif">references shared contract</text>
+  <path
+     d="M 915 612 C 850 560, 788 506, 736 450"
+     fill="none"
+     stroke="#64748b"
+     stroke-width="4"
+     marker-end="url(#arrow)"
+     id="path37" />
+  <text
+     x="823.13324"
+     y="517.85522"
+     class="arrow-label"
+     id="text38"
+     style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:15px;line-height:normal;font-family:'Segoe UI', Inter, Arial, sans-serif">contract controls implementation</text>
+  <path
+     d="M 289.78002,540.7092 C 267.73465,428.0428 249.69753,309.54883 247.69342,206.59505"
+     fill="none"
+     stroke="#64748b"
+     stroke-width="3.94617"
+     marker-end="url(#arrow)"
+     id="path38" />
+  <text
+     x="102"
+     y="430"
+     class="arrow-label"
+     id="text39">uses `createRestClient`</text>
+  <rect
+     x="430"
+     y="780"
+     width="540"
+     height="42"
+     rx="21"
+     fill="#eef2ff"
+     stroke="#c7d2fe"
+     id="rect39" />
+  <text
+     x="464"
+     y="807"
+     class="footer-chip"
+     id="text40">no code generation, no outdated contracts, no extra code, just interfaces</text>
+</svg>
