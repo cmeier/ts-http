@@ -1,4 +1,4 @@
-![ts-http logo](./logo.svg)
+![ts-http logo](./logo.png)
 
 # @ts-http/express
 
