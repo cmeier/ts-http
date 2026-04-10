@@ -1,5 +1,11 @@
 # @ts-http/core
 
+## 0.0.5
+
+### Patch Changes
+
+- Fixed Package References
+
 ## 0.0.4
 
 ### Patch Changes

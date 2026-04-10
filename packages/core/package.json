@@ -1,6 +1,6 @@
 {
     "name": "@ts-http/core",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "description": "Typed HTTP contract definitions and fetch client",
     "keywords": [
         "typescript",
