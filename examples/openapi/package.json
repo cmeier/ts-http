@@ -1,0 +1,20 @@
+{
+    "name": "@examples/openapi",
+    "version": "0.0.3",
+    "private": true,
+    "scripts": {
+        "build": "tsc -p tsconfig.json",
+        "generate": "tsx src/generate-openapi.ts",
+        "generate:config": "ts-http-openapi openapi.config.json",
+        "preview": "tsx src/generate-openapi.ts && npx --yes serve . --listen 4000 --no-clipboard"
+    },
+    "dependencies": {
+        "@examples/contract": "workspace:*",
+        "@ts-http/openapi": "workspace:*"
+    },
+    "devDependencies": {
+        "@types/node": "^25.0.0",
+        "tsx": "^4.19.4",
+        "typescript": "^6.0.0"
+    }
+}

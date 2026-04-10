@@ -1,11 +1,16 @@
 import express from 'express';
+import cors from 'cors';
 import { Readable } from 'node:stream';
 import { createExpressRouter, ExpressController } from '@ts-http/express';
 import { userApi, UserApi, User } from '@examples/contract';
 
 // ---- in-memory store (swap with a real DB) ----
-const store = new Map<string, User>();
-let nextId = 1;
+const store = new Map<string, User>([
+    ['1', { id: '1', name: 'Alice Johnson', email: 'alice@example.com' }],
+    ['2', { id: '2', name: 'Bob Smith',     email: 'bob@example.com' }],
+    ['3', { id: '3', name: 'Carol White',   email: 'carol@example.com' }],
+]);
+let nextId = 4;
 
 // ---- controller ----
 // ExpressController<UserApi> enforces the exact same method signatures
@@ -74,6 +79,7 @@ const userController: ExpressController<UserApi> = {
 
 // ---- app setup ----
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 // Mount the generated router at the controller's base path

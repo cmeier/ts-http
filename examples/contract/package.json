@@ -1,17 +1,19 @@
 {
     "name": "@examples/contract",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "private": true,
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
         "build": "tsc -p tsconfig.json",
-        "dev": "tsc -p tsconfig.json --watch"
+        "dev": "tsc -p tsconfig.json --watch",
+        "generate": "ts-http-openapi openapi.config.json"
     },
     "dependencies": {
         "@ts-http/core": "workspace:*"
     },
     "devDependencies": {
+        "@ts-http/openapi": "workspace:*",
         "typescript": "^6.0.0"
     }
 }

@@ -85,6 +85,15 @@ function isWebReadableStream(val: unknown): val is ReadableStream {
     );
 }
 
+function bindAll<T extends object>(instance: T): T {
+    for (const key of Object.getOwnPropertyNames(Object.getPrototypeOf(instance))) {
+        if (key !== 'constructor' && typeof (instance as any)[key] === 'function') {
+            (instance as any)[key] = (instance as any)[key].bind(instance);
+        }
+    }
+    return instance;
+}
+
 /**
  * Creates an Express Router from an ApiDescription and a matching controller.
  *
@@ -100,6 +109,7 @@ export function createExpressRouter<TContract>(
     api: ApiDescription<TContract>,
     controller: ExpressController<TContract>,
 ): Router {
+    bindAll(controller);
     const router = Router();
 
     // Register static paths before parameterised ones so that e.g.

@@ -17,6 +17,17 @@ export type RouteEntry = {
     method: HttpMethod;
     path: string;
     resultType?: ResultType;
+    // --- OpenAPI operation metadata (optional, ignored at runtime) ---
+    /** Short human-readable title for the operation. */
+    summary?: string;
+    /** Longer description. Supports Markdown. */
+    description?: string;
+    /** Groups operation under one or more tags in the generated spec. */
+    tags?: string[];
+    /** Overrides the auto-generated operationId (defaults to the method name). */
+    operationId?: string;
+    /** Marks the operation as deprecated in the generated spec. */
+    deprecated?: boolean;
 };
 
 export type RouteMapping<TContract> = {
