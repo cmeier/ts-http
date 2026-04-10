@@ -3,6 +3,9 @@ import * as os from 'node:os';
 import * as fs from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { describe, it, expect, afterEach } from 'vitest';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const ROOT_TSCONFIG = path.resolve(__dirname, '../../../../tsconfig.json');
 const CLI_SRC = path.resolve(__dirname, '../cli.ts');

@@ -24,7 +24,8 @@
     },
     "files": [
         "dist",
-        "README.md"
+        "README.md",
+        "logo.svg"
     ],
     "publishConfig": {
         "access": "public"
@@ -43,7 +44,7 @@
         "test": "vitest run"
     },
     "dependencies": {
-        "@ts-http/core": "workspace:*"
+        "@ts-http/core": "workspace:^"
     },
     "peerDependencies": {
         "express": "^4.0.0 || ^5.0.0"

@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@ts-http/openapi>@ts-http/core': 0.0.4
+
 importers:
 
   .:
@@ -115,7 +118,7 @@ importers:
   packages/express:
     dependencies:
       '@ts-http/core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../core
     devDependencies:
       '@types/express':
@@ -152,7 +155,7 @@ importers:
         specifier: ^2.0.0 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
         version: 8.1.1(@nestjs/common@11.1.18(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.18(@nestjs/common@11.1.18(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)
       '@ts-http/core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../core
     devDependencies:
       '@nestjs/common':
@@ -180,8 +183,8 @@ importers:
   packages/openapi:
     dependencies:
       '@ts-http/core':
-        specifier: workspace:*
-        version: link:../core
+        specifier: 0.0.4
+        version: 0.0.4
       typescript:
         specifier: ^6.0.2
         version: 6.0.2
@@ -902,6 +905,9 @@ packages:
 
   '@tokenizer/token@0.3.0':
     resolution: {integrity: sha512-OvjF+z51L3ov0OyAU0duzsYuvO01PH7x4t6DJx+guahgTnBHkhJdG7soQeTSFLWN3efnHyibZ4Z8l2EuWwJN3A==}
+
+  '@ts-http/core@0.0.4':
+    resolution: {integrity: sha512-qd4M2QlVlm3kJ22r0kIWZdjegI8MGtZdCtbx1ghYUBkIlg83hoI8M+/zWf4mafIocOXJ/kFyWXndRKw+MoUqzQ==}
 
   '@tsd/typescript@5.9.3':
     resolution: {integrity: sha512-JSSdNiS0wgd8GHhBwnMAI18Y8XPhLVN+dNelPfZCXFhy9Lb3NbnFyp9JKxxr54jSUkEJPk3cidvCoHducSaRMQ==}
@@ -2930,6 +2936,8 @@ snapshots:
       - supports-color
 
   '@tokenizer/token@0.3.0': {}
+
+  '@ts-http/core@0.0.4': {}
 
   '@tsd/typescript@5.9.3': {}
 

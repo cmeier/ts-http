@@ -23,7 +23,8 @@
     },
     "files": [
         "dist",
-        "README.md"
+        "README.md",
+        "logo.svg"
     ],
     "publishConfig": {
         "access": "public"
@@ -45,7 +46,7 @@
         "test": "vitest run"
     },
     "dependencies": {
-        "@ts-http/core": "workspace:*",
+        "@ts-http/core": "workspace:^",
         "typescript": "^6.0.2"
     },
     "devDependencies": {

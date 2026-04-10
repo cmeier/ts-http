@@ -61,6 +61,8 @@ export interface ContractVariableInfo {
     /** The generic type argument name, e.g. `"UserApi"`. */
     interfaceName: string;
     subRoute?: string;
+    /** Tag definition derived from the `tag` field of the ApiDescription. */
+    tag?: string | { name: string; description?: string };
     mapping: Record<string, RouteEntryInfo>;
 }
 
@@ -163,6 +165,7 @@ export function parseContractVariable(variableName: string, tsconfigPath?: strin
                 if (!decl.initializer || !ts.isObjectLiteralExpression(decl.initializer)) continue;
 
                 let subRoute: string | undefined;
+                let tag: string | { name: string; description?: string } | undefined;
                 const mapping: Record<string, RouteEntryInfo> = {};
 
                 for (const prop of decl.initializer.properties) {
@@ -171,6 +174,8 @@ export function parseContractVariable(variableName: string, tsconfigPath?: strin
 
                     if (key === 'subRoute' && ts.isStringLiteral(prop.initializer)) {
                         subRoute = prop.initializer.text;
+                    } else if (key === 'tag') {
+                        tag = readTagValue(prop.initializer);
                     } else if (key === 'mapping' && ts.isObjectLiteralExpression(prop.initializer)) {
                         for (const entry of prop.initializer.properties) {
                             if (!ts.isPropertyAssignment(entry) || !ts.isIdentifier(entry.name)) continue;
@@ -181,7 +186,7 @@ export function parseContractVariable(variableName: string, tsconfigPath?: strin
                     }
                 }
 
-                result = { variableName, interfaceName, subRoute, mapping };
+                result = { variableName, interfaceName, subRoute, tag, mapping };
             }
         });
 
@@ -223,6 +228,7 @@ export function findContractVariables(pattern?: string, tsconfigPath?: string): 
                 if (!decl.initializer || !ts.isObjectLiteralExpression(decl.initializer)) continue;
 
                 let subRoute: string | undefined;
+                let tag: string | { name: string; description?: string } | undefined;
                 const mapping: Record<string, RouteEntryInfo> = {};
 
                 for (const prop of decl.initializer.properties) {
@@ -230,6 +236,8 @@ export function findContractVariables(pattern?: string, tsconfigPath?: string): 
                     const key = prop.name.text;
                     if (key === 'subRoute' && ts.isStringLiteral(prop.initializer)) {
                         subRoute = prop.initializer.text;
+                    } else if (key === 'tag') {
+                        tag = readTagValue(prop.initializer);
                     } else if (key === 'mapping' && ts.isObjectLiteralExpression(prop.initializer)) {
                         for (const entry of prop.initializer.properties) {
                             if (!ts.isPropertyAssignment(entry) || !ts.isIdentifier(entry.name)) continue;
@@ -240,7 +248,7 @@ export function findContractVariables(pattern?: string, tsconfigPath?: string): 
                     }
                 }
 
-                results.push({ variableName: varName, interfaceName, subRoute, mapping });
+                results.push({ variableName: varName, interfaceName, subRoute, tag, mapping });
             }
         });
     }
@@ -260,6 +268,21 @@ function getApiDescriptionTypeArg(decl: ts.VariableDeclaration): string | undefi
     const arg = typeArguments[0];
     if (!ts.isTypeReferenceNode(arg) || !ts.isIdentifier(arg.typeName)) return undefined;
     return arg.typeName.text;
+}
+
+/** Read a `tag` value — either a plain string or `{ name, description? }` object. */
+function readTagValue(node: ts.Expression): string | { name: string; description?: string } | undefined {
+    if (ts.isStringLiteral(node)) return node.text;
+    if (!ts.isObjectLiteralExpression(node)) return undefined;
+    let name: string | undefined;
+    let description: string | undefined;
+    for (const p of node.properties) {
+        if (!ts.isPropertyAssignment(p) || !ts.isIdentifier(p.name)) continue;
+        if (p.name.text === 'name' && ts.isStringLiteral(p.initializer)) name = p.initializer.text;
+        if (p.name.text === 'description' && ts.isStringLiteral(p.initializer)) description = p.initializer.text;
+    }
+    if (!name) return undefined;
+    return description !== undefined ? { name, description } : { name };
 }
 
 /** Glob `*` wildcard matching for variable names. */

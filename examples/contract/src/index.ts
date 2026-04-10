@@ -24,13 +24,14 @@ export interface UserApi {
 
 export const userApi: ApiDescription<UserApi> = {
     subRoute: '/api/users',
+    tag: { name: 'Users', description: 'User resource operations' },
     mapping: {
         // Minimal form (no meta):  { method: 'GET', path: '' }
-        getAll: { method: 'GET', path: '', tags: ['Users'], summary: 'List all users' },
-        getById: { method: 'GET', path: ':id', tags: ['Users'], summary: 'Get a user by ID' },
-        create: { method: 'POST', path: '', tags: ['Users'], summary: 'Create a new user' },
-        update: { method: 'PUT', path: ':id', tags: ['Users'], summary: 'Update a user' },
-        remove: { method: 'DELETE', path: ':id', tags: ['Users'], summary: 'Delete a user', resultType: 'NONE' },
+        getAll: { method: 'GET', path: '', summary: 'List all users' },
+        getById: { method: 'GET', path: ':id', summary: 'Get a user by ID' },
+        create: { method: 'POST', path: '', summary: 'Create a new user' },
+        update: { method: 'PUT', path: ':id', summary: 'Update a user' },
+        remove: { method: 'DELETE', path: ':id', summary: 'Delete a user', resultType: 'NONE' },
         streamAll: { method: 'GET', path: 'stream', tags: ['Streams'], summary: 'Stream all users as NDJSON', resultType: 'STREAM', description: 'Returns a newline-delimited JSON stream of all users.' },
         streamText: { method: 'POST', path: 'stream-text', tags: ['Streams'], summary: 'Stream a text reply word-by-word', resultType: 'STREAM', description: 'LLM-style streaming endpoint. POST a prompt, receive a token stream.' },
     },

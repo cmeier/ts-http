@@ -34,8 +34,17 @@ export type RouteMapping<TContract> = {
     [K in keyof TContract]: RouteEntry;
 };
 
+export type TagDefinition = { name: string; description?: string };
+
 export type ApiDescription<TContract> = {
     subRoute?: string;
+    /**
+     * Tag applied to every operation in this group when a route does not
+     * specify its own `tags`.  Accepts a plain name string or a full tag
+     * definition with an optional description (used in the generated spec's
+     * top-level `tags` array).
+     */
+    tag?: string | TagDefinition;
     mapping: RouteMapping<TContract>;
 };
 

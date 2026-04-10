@@ -4,18 +4,27 @@
 
 # ts-http
 
-Stop writing the same API calls twice — especially if you're using TypeScript on both the server and the client. Define your endpoints once in TypeScript — the client and server both use the same contract, and the types flow through automatically.
-It has never been this easy!
+Stop writing the same API calls twice — especially if you're using TypeScript on both the server and the client. 
+
+`ts-http` lets you move your API contract into a shared package and treat HTTP as an implementation detail. You define one TypeScript interface plus a small route mapping, then reuse that same contract everywhere.
+
+<p align="center">
+  <img src="docs/package-architecture.svg" alt="Package diagram showing a shared contract package above client and server; the contract and client use @ts-http/core, the server uses @ts-http/express or @ts-http/nestjs, and @ts-http/openapi is an optional greyed-out extension for Swagger UI and clients beyond TypeScript" />
+</p>
+
+That gives you a few big architectural wins:
+
+- **Contracts live in one place** — usually a dedicated `contract` package shared by frontend and backend.
+- **The server only implements an interface** — your communication layer stays focused on typed inputs and outputs instead of framework-specific plumbing.
+- **The client usually needs no handwritten implementation at all** — `createRestClient` creates it directly from the shared contract.
+- **Changes break at compile time** on both sides, instead of drifting out of sync until runtime.
 
 No code generation. No schema files. No runtime validation overhead unless you want it. Just a small config object and TypeScript doing what it's good at.
 Simple, yet fully extensible.
 
-Use it to make sure your Express.js server fulfills your defined interface — or NestJS?
+Use it with Express, NestJS, custom adapters, Axios, Luxon, or your own serialization strategy — the contract stays the stable center of the system.
 
-Convert your data. Use it with Axios, make sure you're serializing your Luxon dates correctly, handle circular references, use it with whatever you want.
-
-
-If that's not enough, you can still generate your `openapi.json` and retain full technology freedom.
+If that's not enough, you can still generate an `openapi.json` with [`@ts-http/openapi`](packages/openapi/README.md) — which opens the door to the entire OpenAPI ecosystem: Swagger UI, Postman, client code generation in any language, API gateways, and much more.
 
 ## Packages
 
@@ -24,6 +33,7 @@ If that's not enough, you can still generate your `openapi.json` and retain full
 | [`@ts-http/core`](packages/core/README.md) | Contract types + typed fetch client (browser & Node 18+) |
 | [`@ts-http/express`](packages/express/README.md) | Express router adapter |
 | [`@ts-http/nestjs`](packages/nestjs/README.md) | NestJS `@Action` decorator + `TypedController` type |
+| [`@ts-http/openapi`](packages/openapi/README.md) | OpenAPI 3.0 spec generator — produce an `openapi.json` from your contracts |
 
 ## How it works
 
@@ -37,7 +47,7 @@ interface MyApi {
 }
 
 const myApi: ApiDescription<MyApi> = {
-  controller: '/api',
+  subRoute: '/api',
   mapping: {
     helloWorld: { 
       method: 'GET', 
@@ -47,7 +57,7 @@ const myApi: ApiDescription<MyApi> = {
 };
 ```
 
-Pass it to `createRestClient`. No base URL needed — leave it out and requests go to the same origin, which is what you want in most frontend apps:
+Pass it to `createRestClient`. No base URL needed (unless you want to) — leave it out and requests go to the same origin, which is what you want in most frontend apps:
 
 ```ts
 import { createRestClient } from '@ts-http/core';
@@ -58,6 +68,17 @@ const result = await client.helloWorld(); // { message: string }
 ```
 
 That's it. The call hits `GET /api/hello-world` on the current origin. TypeScript knows the return type.
+
+## Why this shared-contract architecture works
+
+`ts-http` is most useful when you treat the contract as its own module, separate from both the UI and the server framework:
+
+1. **A shared contract package defines the API** — for example `@my-app/contract` exports the `UserApi` interface and the `userApi` route map.
+2. **The server implements the interface, not the transport** — your controller is just a typed object with business logic. Express or NestJS only adapts HTTP requests to that interface.
+3. **The client is derived from the same contract** — instead of maintaining a second handwritten service layer, `createRestClient(userApi)` gives you one immediately.
+4. **Framework choices stay flexible** — the contract can outlive an adapter change, so your communication layer is less coupled to a specific technology.
+
+The one extra dependency worth calling out is that the **client also uses `@ts-http/core`** to create the concrete API client via `createRestClient(...)`.
 
 ---
 
@@ -75,7 +96,7 @@ export interface UserApi {
 }
 
 export const userApi: ApiDescription<UserApi> = {
-  controller: '/api/users',
+  subRoute: '/api/users',
   mapping: {
     getAll:  { method: 'GET',    path: '' },
     getById: { method: 'GET',    path: ':id' },
@@ -96,7 +117,23 @@ const user = await users.getById('123'); // User
 await users.remove('123');               // void
 ```
 
-**Server** — `createExpressRouter` generates a router and calls your handlers with the right argument types:
+**Express server** — `createExpressRouter` can register a concrete implementation of the contract directly:
+
+```ts
+import { createExpressRouter } from '@ts-http/express';
+
+class UserController implements UserApi {
+  async getAll() { return db.users.findMany(); }
+  async getById(id: string) { return db.users.findById(id); }
+  async create(data: { name: string; email: string }) { return db.users.create(data); }
+  async update(id: string, data: Partial<User>) { return db.users.update(id, data); }
+  async remove(id: string) { await db.users.delete(id); }
+}
+
+app.use(userApi.subRoute ?? '/', createExpressRouter(userApi, new UserController()));
+```
+
+Or, if you prefer writing route handlers more like in Express, you can pass an object literal typed as `ExpressController<UserApi>`:
 
 ```ts
 import { createExpressRouter, ExpressController } from '@ts-http/express';
@@ -109,10 +146,39 @@ const controller: ExpressController<UserApi> = {
   remove:  (id) => db.users.delete(id),
 };
 
-app.use(userApi.controller, createExpressRouter(userApi, controller));
+app.use(userApi.subRoute ?? '/', createExpressRouter(userApi, controller));
 ```
 
-No `req`, no `res`, no `next`. Just your business logic.
+When using the `ExpressController<UserApi>` object style, the methods do **not** need to be marked `async` — they can return either a direct value or a `Promise`.
+
+**NestJS server** — if you're using NestJS, the same contract is even simpler to wire up with `@Action`:
+
+```ts
+import { Body, Controller, Param } from '@nestjs/common';
+import { Action, TypedController } from '@ts-http/nestjs';
+
+@Controller(userApi.subRoute ?? '/')
+class UserController implements TypedController<UserApi> {
+  @Action(userApi.mapping.getAll)
+  getAll() { return db.users.findMany(); }
+
+  @Action(userApi.mapping.getById)
+  getById(@Param('id') id: string) { return db.users.findById(id); }
+
+  @Action(userApi.mapping.create)
+  create(@Body() data: { name: string; email: string }) { return db.users.create(data); }
+
+  @Action(userApi.mapping.update)
+  update(@Param('id') id: string, @Body() data: Partial<User>) {
+    return db.users.update(id, data);
+  }
+
+  @Action(userApi.mapping.remove)
+  remove(@Param('id') id: string) { return db.users.delete(id); }
+}
+```
+
+No `req`, no `res`, no duplicated route strings — just your business logic.
 
 ## Installation
 
@@ -121,40 +187,53 @@ pnpm add @ts-http/core
 pnpm add @ts-http/express  # server side
 ```
 
+Or with nestjs:
+
+```sh
+pnpm add @ts-http/core
+pnpm add @ts-http/nestjs  # server side
+```
+
 Requires Node 18+ or a modern browser (native `fetch`).
 
 ## Client options
 
+With options you can extend your client functionality. If you
+
 ```ts
-const client = createRestClient<MyApi>(api, baseUrl, {
-  // swap in a custom fetch (e.g. for tests or environments without global fetch)
-  fetch: myFetch,
+const client = createRestClient<MyApi>(
+  api, 
+  baseUrl, // if undefined the url is treated relative
+  {
+    // swap in a custom fetch (e.g. for tests or environments without global fetch)
+    fetch: myFetch,
 
-  // called on every response — ideal for auth refresh, toast notifications, etc.
-  onResponse: async (res, { method, url }) => {
-    if (res.status === 401) throw new Error('Unauthorized');
-  },
+    // called on every response — ideal for auth refresh, toast notifications etc.
+    onResponse: async (res, { method, url }) => {
+      if (res.status === 401) throw new Error('Unauthorized');
+    },
 
-  // called on non-2xx errors or network failures
-  // return without throwing to suppress the error silently
-  onError: (error, context) => {
-    console.error(error.message, context.url);
-  },
+    // called on non-2xx errors or network failures
+    // return without throwing to suppress the error silently
+    onError: (error, context) => {
+      console.error(error.message, context.url);
+    },
 
-  // pluggable logger — or pass logging: false to silence everything
-  logger: myLogger,
-  logging: false,
+    // pluggable logger — or pass logging: false to silence everything
+    logger: myLogger,
+    logging: false,
 
-  // fallback result type when the route doesn't specify one
-  defaultResultType: 'JSON',
+    // fallback result type when the route doesn't specify one
+    defaultResultType: 'JSON',
 
-  // type adapters for custom serialization/deserialization
-  // default: [dateAdapter]  (ISO strings → Date objects)
-  adapters: [dateAdapter, myDecimalAdapter],
+    // type adapters for custom serialization/deserialization
+    // default: [dateAdapter]  (ISO strings → Date objects)
+    adapters: [dateAdapter, myDecimalAdapter],
 
-  // full override for JSON parsing (e.g. superjson)
-  parseJson: (text) => superjson.parse(text),
-});
+    // full override for JSON parsing (e.g. superjson)
+    parseJson: (text) => superjson.parse(text),
+  }
+);
 ```
 
 ## Result types
@@ -185,7 +264,7 @@ const client = createRestClient(api, baseUrl, {
 });
 ```
 
-See [`docs/adapters/luxon.md`](docs/adapters/luxon.md) for a complete Luxon `DateTime` example.
+See [`docs/adapters/luxon.md`](docs/adapters/luxon.md) for a complete Luxon `DateTime` example, and [`docs/adapters/axios.md`](docs/adapters/axios.md) to swap in Axios as the HTTP client.
 
 Pass `adapters: []` to disable all transforms.
 
@@ -196,7 +275,7 @@ Return a `ReadableStream` or Node.js `Readable` from a controller handler and th
 ```ts
 // contract
 const fileApi: ApiDescription<FileApi> = {
-  controller: '/files',
+  subRoute: '/files',
   mapping: {
     download: { method: 'GET', path: ':id', resultType: 'STREAM' },
   },
@@ -240,12 +319,15 @@ Run `pnpm build` from the repo root to build everything, then `node examples/ser
 
 ```
 packages/
-  core/      @ts-http/core
-  express/   @ts-http/express
+  core/      @ts-http/core    — contract types + typed fetch client
+  express/   @ts-http/express  — Express router adapter
+  nestjs/    @ts-http/nestjs   — NestJS @Action decorator + TypedController
+  openapi/   @ts-http/openapi  — OpenAPI 3.0 spec generator
 examples/
-  contract/  shared API contract
+  contract/  shared API contract and domain types
   client/    example fetch client
   server/    example Express server
+  openapi/   Swagger UI + generated openapi.json
 ```
 
 ## Origin
@@ -254,7 +336,8 @@ This idea had been sitting in my head for years — I kept writing the same glue
 
 ## License
 
-Free to use, fork and distribute. Attribution is appreciated.
-Pull requests and issues are welcome!
+Free to use and share under the MIT license.
+
+If you have ideas, fixes, or improvements, please open an issue or submit a pull request here — collaboration on this repository is strongly encouraged, and I'd love to keep improving `ts-http` together with the community.
 
 [MIT](LICENSE) © 2026 Clemens Meier

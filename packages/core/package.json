@@ -24,7 +24,8 @@
     },
     "files": [
         "dist",
-        "README.md"
+        "README.md",
+        "logo.svg"
     ],
     "publishConfig": {
         "access": "public"
