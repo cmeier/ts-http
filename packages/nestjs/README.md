@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./logo.svg" alt="ts-http" />
+  <img src="./logo.png" alt="ts-http" width="100" height="96" />
 </p>
 
 # @ts-http/nestjs
