@@ -1,5 +1,13 @@
 # @ts-http/nestjs
 
+## 0.0.4
+
+### Patch Changes
+
+- 4ca5adc: Release Workflow
+- Updated dependencies [4ca5adc]
+    - @ts-http/core@0.0.4
+
 ## 0.0.3
 
 ### Patch Changes

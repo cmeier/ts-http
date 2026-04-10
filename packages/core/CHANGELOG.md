@@ -1,5 +1,11 @@
 # @ts-http/core
 
+## 0.0.4
+
+### Patch Changes
+
+- 4ca5adc: Release Workflow
+
 ## 0.0.3
 
 ### Patch Changes
