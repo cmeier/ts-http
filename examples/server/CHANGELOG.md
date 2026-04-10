@@ -1,5 +1,14 @@
 # @examples/server
 
+## 0.0.5
+
+### Patch Changes
+
+- Fixed Package References
+- Updated dependencies
+    - @examples/contract@0.0.5
+    - @ts-http/express@0.0.5
+
 ## 0.0.4
 
 ### Patch Changes

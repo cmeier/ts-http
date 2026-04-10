@@ -1,4 +1,6 @@
-![ts-http logo](./logo.svg)
+<p align="center">
+  <img src="./logo.svg" alt="ts-http" width="100" height="96" />
+</p>
 
 # @ts-http/nestjs
 

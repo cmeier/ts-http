@@ -1,0 +1,7 @@
+# Treat image assets as binary to avoid accidental text/line-ending conversions
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.svg text eol=lf

@@ -1,4 +1,6 @@
-![ts-http logo](docs/logo.svg)
+<p align="center">
+  <img src="docs/logo.svg" alt="ts-http logo" width="100" height="96" />
+</p>
 
 # ts-http
 
@@ -6,7 +8,9 @@ Stop writing the same API calls twice — especially if you're using TypeScript 
 
 `ts-http` lets you move your API contract into a shared package and treat HTTP as an implementation detail. You define one TypeScript interface plus a small route mapping, then reuse that same contract everywhere.
 
-![Package diagram showing a shared contract package above client and server; the contract and client use @ts-http/core, the server uses @ts-http/express or @ts-http/nestjs, and @ts-http/openapi is an optional extension for Swagger UI and clients beyond TypeScript](docs/package-architecture.svg)
+<p align="center">
+  <img src="docs/package-architecture.svg" alt="Package diagram showing a shared contract package above client and server; the contract and client use @ts-http/core, the server uses @ts-http/express or @ts-http/nestjs, and @ts-http/openapi is an optional extension for Swagger UI and clients beyond TypeScript" />
+</p>
 
 That gives you a few big architectural wins:
 

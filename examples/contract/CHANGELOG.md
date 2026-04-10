@@ -1,5 +1,13 @@
 # @examples/contract
 
+## 0.0.5
+
+### Patch Changes
+
+- Fixed Package References
+- Updated dependencies
+    - @ts-http/core@0.0.5
+
 ## 0.0.4
 
 ### Patch Changes
